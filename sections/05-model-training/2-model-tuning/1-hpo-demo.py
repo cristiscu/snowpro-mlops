@@ -1,20 +1,21 @@
+from snowflake.ml.modeling import tune
+from snowflake.ml.modeling.tune.search import BayesOpt, RandomSearch, GridSearch
+
 # (1) ingest the data
 dataset_map = {
    "train": DataConnector.from_dataframe(session.create_dataframe(X_train)),
    "test": DataConnector.from_dataframe(session.create_dataframe(X_test)))}
 
-# (2) define search algorithm: Grid search / Bayesian optimization / Random search
-from snowflake.ml.modeling.tune.search import BayesOpt, RandomSearch, GridSearch
-search_alg = GridSearch()		# BayesOpt() / RandomSearch()
+# (2) define search algorithm: GridSearch() / BayesOpt() / RandomSearch()
+search_alg = GridSearch()
 
-# (3) define sampling: uniform / loguniform / randint / choice
+# (3) define sampling: tune.uniform/loguniform/randint/choice
 search_space = {
    "n_estimators": tune.uniform(50, 200),
    "max_depth": tune.uniform(3, 10),
    "learning_rate": tune.uniform(0.01, 0.3)}
 
 # (4) configure the tunner
-from snowflake.ml.modeling import tune
 tuner_config = tune.TunerConfig(
    metric="accuracy",
    mode="max",
@@ -32,7 +33,6 @@ def train_func():
    tuner_context.report(metrics={"accuracy": accuracy}, model=model)
 
 # (6) init job training
-from snowflake.ml.modeling import tune
 tuner = tune.Tuner(train_func, search_space, tuner_config)
 tuner_results = tuner.run(dataset_map=dataset_map)
 
