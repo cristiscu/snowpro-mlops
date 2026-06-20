@@ -1,3 +1,5 @@
+# Parallel Hyperparameter Optimization (HPO) on Container Runtime [Template]
+# https://docs.snowflake.com/en/developer-guide/snowflake-ml/container-hpo
 from snowflake.ml.modeling import tune
 
 # configure the tunner
@@ -19,7 +21,7 @@ def train_func():
 # init job training (w/ search space)
 tuner = tune.Tuner(
    train_func, 
-   { "n_estimators": tune.uniform(50, 200),    # tune.loguniform/randint/choice
+   { "n_estimators": tune.uniform(50, 200),    # alt: tune.loguniform/randint/choice
       "max_depth": tune.uniform(3, 10),
       "learning_rate": tune.uniform(0.01, 0.3)}, 
    tuner_config)

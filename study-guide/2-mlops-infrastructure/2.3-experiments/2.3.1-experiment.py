@@ -1,4 +1,4 @@
-# Experiment with single run template
+# Experiment with single run [Template]
 # https://docs.snowflake.com/en/developer-guide/snowflake-ml/experiments
 # (you still need the training and test input datasets)
 
