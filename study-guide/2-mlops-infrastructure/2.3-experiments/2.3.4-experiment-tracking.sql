@@ -1,0 +1,17 @@
+USE test.public;
+
+CREATE OR REPLACE EXPERIMENT exp1;
+
+ALTER EXPERIMENT exp1 ADD RUN run1;
+ALTER EXPERIMENT exp1 COMMIT RUN run1;
+
+SHOW EXPERIMENTS IN DATABASE test;
+SHOW RUNS IN EXPERIMENT exp1;
+SHOW RUN METRICS IN EXPERIMENT exp1;
+SHOW RUN PARAMETERS IN EXPERIMENT exp1 RUN run1;
+
+ALTER EXPERIMENT exp1 ADD RUN run2;
+ALTER EXPERIMENT exp1 DROP RUN run2;
+
+LIST snow://experiment/exp1/versions/run1/logs
+-- GET snow://experiment/exp1/versions/run1/logs/log0.txt file:///tmp
