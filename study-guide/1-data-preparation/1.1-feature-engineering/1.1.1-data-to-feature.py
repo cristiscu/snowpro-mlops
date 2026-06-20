@@ -5,23 +5,19 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 
-df = pd.DataFrame({
+data = pd.DataFrame({
     'age': [34, 23, 54, 31],
     'city': ['SF', 'NY', 'SF', 'LA'],
-    'income': [120000, 95000, 135000, 99000]})
+    'income': [120000, 95000, 135000, 99000]
+})
 
-numeric_features = ['age', 'income']
-numeric_transformer = StandardScaler()
-categorical_features = ['city']
-categorical_transformer = OneHotEncoder()
-
-preprocessor = ColumnTransformer(transformers=[
-   ('num', numeric_transformer, numeric_features),
-   ('cat', categorical_transformer, categorical_features)])
-
-pipeline = Pipeline(steps=[('preprocessor', preprocessor)])
-X_processed = pipeline.fit_transform(df)
-print(X_processed)
+pipeline = Pipeline(steps=[
+   ('preprocessor', ColumnTransformer(transformers=[
+      ('scaler', StandardScaler(), ['age', 'income']),
+      ('encoder', OneHotEncoder(), ['city'])]))
+])
+result = pipeline.fit_transform(data)
+print(result)
 
 # ------------------------------------------------------
 # Snowflake ML preprocessors
@@ -32,17 +28,16 @@ from snowflake.ml.modeling.preprocessing import OneHotEncoder
 from snowflake.ml.modeling.pipeline import Pipeline
 
 session = Session.builder.configs(...).create()
-
 df = session.table('CUSTOMER_DATA')
 
-scaler = StandardScaler(
-   input_cols=['AGE', 'INCOME'],
-   output_cols = ['AGE_SCALED', 'INCOME_SCALED'])
-encoder = OneHotEncoder(
-   input_cols=['CITY'], 
-   output_cols=['CITY_ENCODED'])
-
-pipeline = Pipeline(steps=[('scaling', scaler), ('encoding', encoder)])
+pipeline = Pipeline(steps=[
+   ('scaling', StandardScaler(
+      input_cols=['AGE', 'INCOME'],
+      output_cols = ['AGE_SCALED', 'INCOME_SCALED'])), 
+   ('encoding', OneHotEncoder(
+      input_cols=['CITY'], 
+      output_cols=['CITY_ENCODED']))
+])
 result = pipeline.fit_transform(df)
 result.show()
 
