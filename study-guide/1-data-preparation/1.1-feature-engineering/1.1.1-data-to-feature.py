@@ -22,12 +22,12 @@ print(result)
 # ------------------------------------------------------
 # Snowflake ML preprocessors
 
-from snowflake.snowpark import Session
+from snowflake.snowpark.context import get_active_session
 from snowflake.ml.modeling.preprocessing import StandardScaler
 from snowflake.ml.modeling.preprocessing import OneHotEncoder
 from snowflake.ml.modeling.pipeline import Pipeline
 
-session = Session.builder.configs(...).create()
+session = get_active_session()
 df = session.table('CUSTOMER_DATA')
 
 pipeline = Pipeline(steps=[
